@@ -4,7 +4,17 @@
 \alias{stylest_fit}
 \title{Fit speaker_model to a corpus}
 \usage{
-stylest_fit(x, speaker, terms = NULL, filter = NULL, smooth = 0.5)
+stylest_fit(
+  x,
+  speaker,
+  terms = NULL,
+  filter = NULL,
+  smooth = 0.5,
+  term_weights = NULL,
+  fill_method = "value",
+  fill_weight = 0,
+  weight_varname = "mean_distance"
+)
 }
 \arguments{
 \item{x}{Text vector. May be a \code{corpus_frame} object}
@@ -20,6 +30,22 @@ See \code{corpus} for more information about specifying \code{filter}}
 
 \item{smooth}{Numeric value used smooth term frequencies instead of the
 default of 0.5}
+
+\item{term_weights}{Dataframe of distances (or any weights) per
+word in the vocab. This dataframe should have one column $word and
+a second column $weight_var containing the weight for the word.
+See the vignette for details.}
+
+\item{fill_method}{if \code{"value"} (default), \code{fill_weight} is
+used to fill any terms with \code{NA} weight. If \code{"mean"}, the
+mean term_weight should be used as the fill value}
+
+\item{fill_weight}{numeric value to fill in as weight for any term
+which does not have a weight specified in \code{term_weights}, 
+default=\code{0.0} (drops any words without weights)}
+
+\item{weight_varname}{Name of the column in term_weights containing the weights,
+default=\code{"mean_distance"}}
 }
 \value{
 A S3 \code{stylest_model} object containing:
@@ -28,6 +54,7 @@ A S3 \code{stylest_model} object containing:
 \code{terms} terms used in fitting the model,
 \code{ntoken} Vector of number of tokens per speaker,
 \code{smooth} Smoothing value,
+\code{weights} If not NULL, a named matrix of weights for each term in the vocab,
 \code{rate} Matrix of speaker rates for each term in vocabulary
 }
 \description{
